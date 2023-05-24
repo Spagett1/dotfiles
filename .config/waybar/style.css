@@ -1,0 +1,208 @@
+@import "catppuccin/mocha.css";
+
+/* =============================== */
+/* Universal Styling */
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Source Code Pro", "UbuntuMono Nerd Font";
+    font-size: 15px; 
+    min-height: 0;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* Bar Styling */
+#waybar {
+    background: transparent;
+    color: @text;
+    margin: 10px 0;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* Workspaces */
+#workspaces {
+    margin: 10px 0;
+	/*background-color: @surface0;*/
+}
+
+#workspaces button {
+    background-color: @surface0;
+    color: @mauve;
+    transition: all 0.5s cubic-bezier(0.33, 1.0, 0.68, 1.0); /* easeInOutCubic */
+}
+
+#workspaces button.active {
+    color: @lavender;
+}
+
+#workspaces button:hover {
+	color: @lavender;
+	/* border-radius: 1rem; */
+}
+#custom-border_right {
+    background-color: @surface0;
+    color: @text;
+	border-radius: 0rem 1rem 1rem 0rem;
+	/* padding: 0rem 0.4rem; */
+	margin: 10px 0;
+    margin-right: 1rem;
+    padding-right: 0.4rem;
+}
+#custom-border_left {
+    background-color: @surface0;
+    color: @text;
+	border-radius: 1rem 0rem 0rem 1rem;
+	/* padding: 0rem 0.4rem; */
+	margin: 10px 0;
+    margin-left: 1rem;
+    padding-left: 0.4rem;
+}
+#custom-mpd_toggle {
+    background-color: @surface0;
+    /*color: @text;*/
+    color: #9ece6a;
+    font-size: 20px;
+	margin: 10px 0;
+
+}
+#custom-mpd_next,
+#custom-mpd_prev {
+    background-color: @surface0;
+    /*color: @text;*/
+    color: #e0af68;
+    font-size: 20px;
+	margin: 10px 0;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* Main Modules */
+#window,
+#tray,
+#backlight,
+#clock,
+#battery,
+#pulseaudio,
+#network,
+#mpd,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#custom-music,
+#custom-launcher,
+#custom-updates,
+#custom-notifications,
+#custom-power,
+#custom-weather {
+    background-color: @surface0;
+    color: @text;
+	/* border-radius: 1rem; */
+	padding: 0.25rem 0.75rem;
+	margin: 10px 0;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* System Monitoring Modules */
+#cpu, #memory, #temperature {
+    color: @blue;
+}
+
+#disk {
+    color: @peach;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* Clock Module */
+#clock {
+    color: @flamingo;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* Battery Module */
+#battery {
+    color: @green;
+}
+#battery.charging {
+    color: @green;
+}
+#battery.warning:not(.charging) {
+    color: @maroon;
+}
+#battery.critical:not(.charging) {
+    color: @red;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* Backlight Module */
+#backlight {
+    color: @teal;
+    padding-right: 1.25rem;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* Network Module */
+#network {
+	color: @blue;
+    padding-right: 1.25rem;
+}
+/* =============================== */
+
+
+/* =============================== */
+/* PulseAudio Module */
+#pulseaudio {
+	color: @mauve;
+    padding-right: 1.20rem;
+}
+/* =============================== */
+
+/* =============================== */
+/* |       Custom Modules        | */
+/* =============================== */
+
+/* Music/PlayerCTL Module */
+#custom-music {
+    color: @mauve;
+    border-radius: 1rem;
+    margin-left: 1rem;
+}
+
+/* Launcher Module */
+#custom-launcher {
+    color: @mauve;
+    border-radius: 1rem;
+}
+
+/* Updates Module */
+#custom-updates {
+    color: @sky;
+}
+
+/* Powermenu Module */
+#custom-power {
+    color: @mauve;
+
+}
+
+/* Notifications Module */
+#custom-notifications {
+    color: @mauve;
+    /* padding-right: 1.25rem; */
+}
+/* =============================== */

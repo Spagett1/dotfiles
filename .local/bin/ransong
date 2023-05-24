@@ -1,0 +1,14 @@
+#!/bin/sh
+unset folder 
+unset song 
+cd $HOME/music 
+folder=`ls | sort -R | tail -n 1` 
+cd "$folder"
+artist=`ls | sort -R | tail -n1` 
+cd "$artist" 
+song=`ls | sort -R | tail -n 1` 
+mpc clear 
+mpc add "$folder"/"$artist"/"$song" 
+mpc play 
+mpc pause
+
