@@ -1,0 +1,138 @@
+#!/bin/sh
+#
+# ufetch-alpine - tiny system info for alpine
+
+## INFO
+
+# user is already defined
+host="$(hostname)"
+os='Alpine Linux'
+kernel="$(uname -sr)"
+packages="$(apk list --installed | wc -l)"
+uptime="$(uptime | awk -F, '{sub(".*up ",x,$1);print $1}' | sed -e 's/^[ \t]*//')"
+# packages="$(apk info | wc -l)"
+shell="$(basename "${SHELL}")"
+
+## UI DETECTION
+
+parse_rcs() {
+	for f in "${@}"; do
+		wm="$(tail -n 1 "${f}" 2> /dev/null | cut -d ' ' -f 2)"
+		[ -n "${wm}" ] && echo "${wm}" && return
+	done
+}
+
+rcwm="$(parse_rcs "${HOME}/.xinitrc" "${HOME}/.xsession")"
+
+ui='unknown'
+uitype='UI'
+if [ -n "${DE}" ]; then
+	ui="${DE}"
+	uitype='DE'
+elif [ -n "${WM}" ]; then
+	ui="${WM}"
+	uitype='WM'
+elif [ -n "${XDG_CURRENT_DESKTOP}" ]; then
+	ui="${XDG_CURRENT_DESKTOP}"
+	uitype='WM'
+elif [ -n "${DESKTOP_SESSION}" ]; then
+	ui="${DESKTOP_SESSION}"
+	uitype='DE'
+elif [ -n "${rcwm}" ]; then
+	ui="${rcwm}"
+	uitype='WM'
+elif [ -n "${XDG_SESSION_TYPE}" ]; then
+	ui="${XDG_SESSION_TYPE}"
+elif [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+	ui="ssh"
+fi
+
+ui="$(basename "${ui}")"
+## GET RES
+for dev in /sys/class/drm/*/modes; do
+    read -r resolution _ < "$dev"
+
+    [ $resolution ] && break
+done
+
+## GET RAM
+while IFS=':k '  read -r key val _; do
+    case $key in
+        (MemTotal)
+            mem_used=$((mem_used + val))
+            mem_full=$val
+        ;;
+
+        (Shmem)
+            mem_used=$((mem_used + val))
+        ;;
+
+        (MemFree | Buffers | Cached | SReclaimable)
+            mem_used=$((mem_used - val))
+        ;;
+
+        # If detected this will be used over the above calculation
+        # for mem_used. Available since Linux 3.14rc.
+        # See kernel commit 34e431b0ae398fc54ea69ff85ec700722c9da773
+        (MemAvailable)
+            mem_avail=$val
+        ;;
+    esac
+done < /proc/meminfo
+
+case $mem_avail in
+    (*[0-9]*)
+        mem_used=$(((mem_full - mem_avail) / 1024))
+    ;;
+
+    *)
+        mem_used=$((mem_used / 1024))
+    ;;
+esac
+
+mem_full=$((mem_full / 1024))
+
+## DEFINE COLORS
+
+bold='\033[1m'
+black='\033[0;30m'
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+blue='\033[0;34m'
+magenta='\033[0;35m'
+cyan='\033[0;36m'
+white='\033[0;37m'
+reset='\033[0m'
+
+# you can change these
+lc="${reset}${bold}${blue}"         # labels
+nc="${reset}${bold}${blue}"         # user and hostname
+bc="${reset}${red}"         # user and hostname
+ic="${reset}"                       # info
+c0="${reset}${white}"                # first color
+
+## OUTPUT
+
+#             ${lc}PACKAGES:  ${ic}${packages}${reset}
+printf "${c0}   .             ${nc}${USER}${ic}@${nc}${host}${reset}
+${c0}  / \\            ${lc}OS:        ${ic}${os}${reset}
+${c0}  | |            ${lc}Kernel:    ${ic}${kernel}${reset}
+${c0}  |.|            ${lc}Uptime:    ${ic}${uptime}${reset}
+${c0}  |.|            ${lc}Shell:     ${ic}${shell}${reset}
+${c0}  |:|      ${bc}__    ${lc}Packages:  ${ic}${packages}${reset}
+${c0},_|:|_,   ${bc}/  )   ${lc}${uitype}:        ${ic}${ui}${reset}
+${c0}  (Oo   ${bc} / ${c0}_I_   ${lc}Res:       ${ic}${resolution}${reset}
+${c0}   +\\ \\  || __|  ${lc}Ram:       ${ic}${mem_used}M / ${mem_full}M${reset}
+${c0}      \\ \\||___|
+${c0}        \\ /${bc}.:.${c0}\\-\\
+${c0}         |${bc}   ${reset}/-----\\
+${c0}         |___${reset}|::o${bc}O${reset}o::|
+${c0}         /   ${reset}|:${bc}<_T_>${reset}:|
+${c0}        |_____${reset}\ :${bc}:${reset}: /
+${c0}         | |  \ ${reset}\:/
+${c0}         | |   | |
+${c0}         \ /   | \___
+${c0}         / |   \\_____\\
+${c0}         \`-'
+"

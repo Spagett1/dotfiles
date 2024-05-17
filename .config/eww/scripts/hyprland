@@ -1,0 +1,82 @@
+#!/bin/sh
+workspaces=$(hyprctl workspaces)
+
+workspace_status() {
+    if hyprctl activeworkspace | grep -q "ID $num ($num)"; then
+        echo "󰐾 $num"
+    elif echo $workspaces | grep -q "$num ($num)"; then
+        echo " $num"
+    else
+        echo "  $num"
+    fi
+}
+
+active_status() {
+    if hyprctl activeworkspace | grep -q "ID $num ($num)"; then
+        echo "btn_active_workspace"
+    else
+        echo "btn_workspace"
+    fi
+}
+
+if [[ "$1" == "--w1" ]]; then
+    num=1
+    workspace_status
+elif [[ "$1" == "--w2" ]]; then
+    num=2
+    workspace_status
+elif [[ "$1" == "--w3" ]]; then
+    num=3
+    workspace_status
+elif [[ "$1" == "--w4" ]]; then
+    num=4
+    workspace_status
+elif [[ "$1" == "--w5" ]]; then
+    num=5
+    workspace_status
+elif [[ "$1" == "--w6" ]]; then
+    num=6
+    workspace_status
+elif [[ "$1" == "--w7" ]]; then
+    num=7
+    workspace_status
+elif [[ "$1" == "--w8" ]]; then
+    num=8
+    workspace_status
+elif [[ "$1" == "--w9" ]]; then
+    num=9
+    workspace_status
+elif [[ "$1" == "--w10" ]]; then
+    num=10
+    workspace_status
+elif [[ "$1" == "--cw1" ]]; then
+     num=1
+    active_status
+elif [[ "$1" == "--cw2" ]]; then
+    num=2
+    active_status
+elif [[ "$1" == "--cw3" ]]; then
+    num=3
+    active_status
+elif [[ "$1" == "--cw4" ]]; then
+    num=4
+    active_status
+elif [[ "$1" == "--cw5" ]]; then
+    num=5
+    active_status
+elif [[ "$1" == "--cw6" ]]; then
+    num=6
+    active_status
+elif [[ "$1" == "--cw7" ]]; then
+    num=7
+    active_status
+elif [[ "$1" == "--cw8" ]]; then
+    num=8
+    active_status
+elif [[ "$1" == "--cw9" ]]; then
+    num=9
+    active_status
+elif [[ "$1" == "--cw10" ]]; then
+    num=10
+    active_status
+fi

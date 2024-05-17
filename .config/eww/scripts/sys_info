@@ -1,0 +1,251 @@
+#!/bin/bash
+
+## Files and Data
+PREV_TOTAL=0
+PREV_IDLE=0
+cpuFile="/tmp/.cpu_usage"
+
+## Get CPU usage
+get_cpu() {
+	if [[ -f "${cpuFile}" ]]; then
+		fileCont=$(cat "${cpuFile}")
+		PREV_TOTAL=$(echo "${fileCont}" | head -n 1)
+		PREV_IDLE=$(echo "${fileCont}" | tail -n 1)
+	fi
+
+	CPU=(`cat /proc/stat | grep '^cpu '`) # Get the total CPU statistics.
+	unset CPU[0]                          # Discard the "cpu" prefix.
+	IDLE=${CPU[4]}                        # Get the idle CPU time.
+
+	# Calculate the total CPU time.
+	TOTAL=0
+
+	for VALUE in "${CPU[@]:0:4}"; do
+		let "TOTAL=$TOTAL+$VALUE"
+	done
+
+	if [[ "${PREV_TOTAL}" != "" ]] && [[ "${PREV_IDLE}" != "" ]]; then
+		# Calculate the CPU usage since we last checked.
+		let "DIFF_IDLE=$IDLE-$PREV_IDLE"
+		let "DIFF_TOTAL=$TOTAL-$PREV_TOTAL"
+		let "DIFF_USAGE=(1000*($DIFF_TOTAL-$DIFF_IDLE)/$DIFF_TOTAL+5)/10"
+		echo "${DIFF_USAGE}"
+	else
+		echo "?"
+	fi
+
+	# Remember the total and idle CPU times for the next check.
+	echo "${TOTAL}" > "${cpuFile}"
+	echo "${IDLE}" >> "${cpuFile}"
+}
+
+## Get Used memory
+get_mem() {
+	printf "%.0f\n" $(free -m | grep Mem | awk '{print ($3/$2)*100}')
+}
+
+## Get Brightness
+get_blight() {
+	# CARD=`ls /sys/class/backlight | head -n 1`
+	#
+	# if [[ "$CARD" == *"intel_"* ]]; then
+	# 	BNESS=`xbacklight -get`
+	# 	LIGHT=${BNESS%.*}
+	# else
+	# 	BNESS=`blight -d $CARD get brightness`
+	# 	PERC="$(($BNESS*100/255))"
+	# 	LIGHT=${PERC%.*}
+	# fi
+    LIGHT=$(brightnessctl g)
+
+	echo "$LIGHT"
+}
+
+## Get Battery 
+get_battery() {
+	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+	cat /sys/class/power_supply/${BAT}/capacity
+}
+
+## Check for Charging
+get_charging() {
+	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+    STATUS=$(cat /sys/class/power_supply/${BAT}/status)
+    if [ $STATUS == "Discharging" ]; then
+        echo "%"
+    else
+        echo "󱐋"
+    fi
+}
+
+get_charge_estimate() {
+	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+    TIME=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep "time to empty" | cut -d: -f2 | sed -e 's/^[ \t]*//')
+    echo $TIME
+}
+
+## Get temp
+get_temperature() {
+    temp=$(cat /sys/class/thermal/thermal_zone0/temp)
+    echo $((temp / 1000))
+}
+
+## Get BT Bat
+get_connected_devices() {
+    IFS=$'\n'
+    for iterator in $(bluetoothctl devices); do
+        mac=$(echo $iterator | cut -d' ' -f2)
+        deviceconnected=$(bluetoothctl info $mac | grep "Connected")
+        if [ $(echo $deviceconnected | cut -d' ' -f2) =  "yes" ]; then
+            devices+="$mac*"
+            # devbat=$(bluetoothctl info $mac | grep "Battery Percentage" | cut -d'(' -f2 | cut -d ')' -f1)
+            # echo $devbat
+        fi
+    done
+}
+
+get_bt1_bat() {
+    mac=$(echo $devices | cut -d'*' -f1)
+    if [ ! -z $mac ]; then
+        devbat=$(bluetoothctl info $mac | grep "Battery Percentage" | cut -d'(' -f2 | cut -d ')' -f1)
+        echo $devbat
+    else
+        echo "--"
+    fi
+}
+get_bt1_icon() {
+    mac=$(echo $devices | cut -d'*' -f1)
+    if [ ! -z $mac ]; then
+        devicon=$(bluetoothctl info $mac | grep "Icon" | cut -d' ' -f2)
+        [ $devicon = "audio-headset" ] && icon='images/headphones.svg'
+        [ $devicon = "input-mouse" ] && icon='images/mouse.svg'
+        echo $icon
+    else
+        echo ""
+    fi
+}
+get_bt1_per() {
+    mac=$(echo $devices | cut -d'*' -f1)
+    if [ ! -z $mac ]; then
+        devbat=$(bluetoothctl info $mac | grep "Battery Percentage" | cut -d'(' -f2 | cut -d ')' -f1)
+        if [ ! -z $devbat ]; then
+            echo "%"
+        fi
+    fi
+}
+get_bt2_bat() {
+    mac=$(echo $devices | cut -d'*' -f2)
+    if [ ! -z $mac ]; then
+        devbat=$(bluetoothctl info $mac | grep "Battery Percentage" | cut -d'(' -f2 | cut -d ')' -f1)
+        echo $devbat
+    else
+        echo "--"
+    fi
+}
+get_bt2_icon() {
+    mac=$(echo $devices | cut -d'*' -f2)
+    if [ ! -z $mac ]; then
+        devicon=$(bluetoothctl info $mac | grep "Icon" | cut -d' ' -f2)
+        [ $devicon = "audio-headset" ] && icon='images/headphones.svg'
+        [ $devicon = "input-mouse" ] && icon='images/mouse.svg'
+        echo $icon
+    else
+        echo ""
+    fi
+}
+get_bt2_per() {
+    mac=$(echo $devices | cut -d'*' -f2)
+    if [ ! -z $mac ]; then
+        devbat=$(bluetoothctl info $mac | grep "Battery Percentage" | cut -d'(' -f2 | cut -d ')' -f1)
+        if [ ! -z $devbat ]; then
+            echo "%"
+        fi
+    fi
+}
+get_bt3_icon() {
+    mac=$(echo $devices | cut -d'*' -f3)
+    if [ ! -z $mac ]; then
+        devicon=$(bluetoothctl info $mac | grep "Icon" | cut -d' ' -f2)
+        [ $devicon = "audio-headset" ] && icon='images/headphones.svg'
+        [ $devicon = "input-mouse" ] && icon='images/mouse.svg'
+        echo $icon
+    else
+        echo ""
+    fi
+}
+get_bt3_per() {
+    mac=$(echo $devices | cut -d'*' -f3)
+    if [ ! -z $mac ]; then
+        devbat=$(bluetoothctl info $mac | grep "Battery Percentage" | cut -d'(' -f2 | cut -d ')' -f1)
+        if [ ! -z $devbat ]; then
+            echo "%"
+        fi
+    fi
+}
+get_bt3_bat() {
+    mac=$(echo $devices | cut -d'*' -f3)
+    if [ ! -z $mac ]; then
+        devbat=$(bluetoothctl info $mac | grep "Battery Percentage" | cut -d'(' -f2 | cut -d ')' -f1)
+        echo $devbat
+    else
+        echo "--"
+    fi
+}
+get_storage() {
+    echo "$(df / | tail -n 1 | cut -d" " -f10 | sed 's/%//g')"
+}
+get_volume() {
+    volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -d" " -f2 | tr -d . | sed 's/^0*\(.*\)/\1/')
+    if [ -z $volume ]; then
+        volume="0"
+    fi
+    echo $volume
+}
+
+## Execute accordingly
+if [[ "$1" == "--cpu" ]]; then
+	get_cpu
+elif [[ "$1" == "--mem" ]]; then
+	get_mem
+elif [[ "$1" == "--blight" ]]; then
+	get_blight
+elif [[ "$1" == "--bat" ]]; then
+	get_battery
+elif [[ "$1" == "--charge" ]]; then
+    get_charging
+elif [[ "$1" == "--charge_estimate" ]]; then
+    get_charge_estimate
+elif [[ "$1" == "--storage" ]]; then
+    get_storage
+elif [[ "$1" == "--volume" ]]; then
+    get_volume
+elif [[ "$1" == "--temp" ]]; then
+    get_temperature
+elif [[ "$1" == "--btbat1" ]]; then
+	get_connected_devices
+    get_bt1_bat
+elif [[ "$1" == "--btbat2" ]]; then
+	get_connected_devices
+    get_bt2_bat
+elif [[ "$1" == "--btbat3" ]]; then
+	get_connected_devices
+    get_bt3_bat
+elif [[ "$1" == "--bticon1" ]]; then
+	get_connected_devices
+    get_bt1_icon
+elif [[ "$1" == "--bticon2" ]]; then
+	get_connected_devices
+    get_bt2_icon
+elif [[ "$1" == "--bticon3" ]]; then
+	get_connected_devices
+    get_bt3_icon
+elif [[ "$1" == "--btper1" ]]; then
+	get_connected_devices
+    get_bt1_per
+elif [[ "$1" == "--btper2" ]]; then
+	get_connected_devices
+    get_bt2_per
+elif [[ "$1" == "--btper3" ]]; then
+	get_connected_devices
+    get_bt3_per
+fi

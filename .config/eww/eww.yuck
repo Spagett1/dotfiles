@@ -1,0 +1,329 @@
+;; ** Variables ***********************************************************************
+
+;; Profile vars
+(defvar IMAGE "images/profile.jpg")
+(defvar LAPTOPIMAGE "images/laptop.svg")
+(defvar NAME "Spagett")
+(defpoll UNAME :interval "5m" `whoami`)
+
+;; System vars
+(defpoll HOST :interval "5s" `hostname`)
+(defpoll CPU_USAGE :interval "1s" `scripts/sys_info --cpu`)
+(defpoll MEM_USAGE :interval "1s" `scripts/sys_info --mem`)
+(defpoll DRIVE_USAGE :interval "1s" `scripts/sys_info --storage`)
+(defpoll BLIGHT :interval "0.4s" `scripts/sys_info --blight`)
+(defpoll VOLUME :interval "0.4s" `scripts/sys_info --volume`)
+(defpoll CPUTEMP :interval "3s" `scripts/sys_info --temp`)
+(defpoll BATTERY :interval "5s" `scripts/sys_info --bat`)
+(defpoll CSTATUS :interval "2s" `scripts/sys_info --charge`)
+(defpoll BATTIME :interval "2s" `scripts/sys_info --charge_estimate`)
+(defpoll DEV1BAT :interval "5s" `scripts/sys_info --btbat1`)
+(defpoll DEV2BAT :interval "5s" `scripts/sys_info --btbat2`)
+(defpoll DEV3BAT :interval "5s" `scripts/sys_info --btbat3`)
+(defpoll DEV1ICON :interval "5s" `scripts/sys_info --bticon1`)
+(defpoll DEV2ICON :interval "5s" `scripts/sys_info --bticon2`)
+(defpoll DEV3ICON :interval "5s" `scripts/sys_info --bticon3`)
+(defpoll DEV1PER :interval "5s" `scripts/sys_info --btper1`)
+(defpoll DEV2PER :interval "5s" `scripts/sys_info --btper2`)
+(defpoll DEV3PER :interval "5s" `scripts/sys_info --btper3`)
+
+;; Wifi vars
+(defpoll SSID :interval "5s" `scripts/net --ssid`)
+(defpoll IP :interval "5s" `scripts/net --ip`)
+(defpoll STRENGTH :interval "5s" `scripts/net --strength`)
+
+;; WM vars
+(defpoll WORK1 :interval "0.3s" `scripts/hyprland --w1`)
+(defpoll WORK2 :interval "0.3s" `scripts/hyprland --w2`)
+(defpoll WORK3 :interval "0.3s" `scripts/hyprland --w3`)
+(defpoll WORK4 :interval "0.3s" `scripts/hyprland --w4`)
+(defpoll WORK5 :interval "0.3s" `scripts/hyprland --w5`)
+(defpoll WORK6 :interval "0.3s" `scripts/hyprland --w6`)
+(defpoll WORK7 :interval "0.3s" `scripts/hyprland --w7`)
+(defpoll WORK8 :interval "0.3s" `scripts/hyprland --w8`)
+(defpoll WORK9 :interval "0.3s" `scripts/hyprland --w9`)
+(defpoll WORK10 :interval "0.3s" `scripts/hyprland --w10`)
+;; WM vars
+(defpoll ACTIVEWORK1 :interval "0.3s" `scripts/hyprland --cw1`)
+(defpoll ACTIVEWORK2 :interval "0.3s" `scripts/hyprland --cw2`)
+(defpoll ACTIVEWORK3 :interval "0.3s" `scripts/hyprland --cw3`)
+(defpoll ACTIVEWORK4 :interval "0.3s" `scripts/hyprland --cw4`)
+(defpoll ACTIVEWORK5 :interval "0.3s" `scripts/hyprland --cw5`)
+(defpoll ACTIVEWORK6 :interval "0.3s" `scripts/hyprland --cw6`)
+(defpoll ACTIVEWORK7 :interval "0.3s" `scripts/hyprland --cw7`)
+(defpoll ACTIVEWORK8 :interval "0.3s" `scripts/hyprland --cw8`)
+(defpoll ACTIVEWORK9 :interval "0.3s" `scripts/hyprland --cw9`)
+(defpoll ACTIVEWORK10 :interval "0.3s" `scripts/hyprland --cw10`)
+
+
+;; Time vars
+(defpoll HOUR :interval "5s" `date +\"%I\"`)
+(defpoll MIN :interval "5s" `date +\"%M\"`)
+(defpoll MER :interval "5s" `date +\"%p\"`)
+(defpoll DAY :interval "5s" `date +\"%A\"`)
+
+;; Music vars
+(defpoll SONG :interval "1s" `scripts/music_info --song`)
+(defpoll ARTIST :interval "1s" `scripts/music_info --artist`)
+(defpoll STATUS :interval "1s" `scripts/music_info --status`)
+(defpoll CURRENT :interval "1s" `scripts/music_info --time`)
+(defpoll COVER :interval "1s" `scripts/music_info --cover`)
+(defpoll CTIME :interval "1s" `scripts/music_info --ctime`)
+(defpoll TTIME :interval "1s" `scripts/music_info --ttime`)
+
+;; Weather vars
+(defpoll FETCH_WEATHER :interval "5m" `scripts/weather_info --getdata`)
+(defpoll ICON :interval "15m" `scripts/weather_info --icon`)
+(defpoll STAT :interval "15m" `scripts/weather_info --stat`)
+(defpoll TEMP :interval "15m" `scripts/weather_info --temp`)
+(defpoll HEX :interval "15m" `scripts/weather_info --hex`)
+(defpoll QUOTE :interval "15m" `scripts/weather_info --quote`)
+(defpoll QUOTE2 :interval "15m" `scripts/weather_info --quote2`)
+
+;; Apps vars
+(defpoll MAILS :interval "5m" `scripts/mails`)
+
+;; Files vars
+(defpoll FREE :interval "5s" `df -h / | awk '{print $4}' | tail -n 1 | sed 's/G/GB/'`)
+
+;; background
+(defwidget bg [] 
+	(box :class "bg")
+)
+
+;; profile
+(defwidget user [] 
+	(box :class "genwin" :orientation "v" :spacing 35 :space-evenly "false" :vexpand "false" :hexpand "false"
+		(box :style "background-image: url('${IMAGE}');" :class "face" :halign "center")
+		(label :class "fullname" :halign "center" :wrap "true" :limit-width 25 :text NAME)
+		(label :class "username" :halign "center" :wrap "true" :limit-width 25 :text HOST)))
+
+;; system
+(defwidget system [] 
+	(box :class "genwin" :vexpand "false" :hexpand "false" 
+		(box :orientation "v" :spacing 35 :halign "center" :valign "center" :space-evenly "false" :vexpand "false" :hexpand "false" 
+			(box :class "cpu_bar" :orientation "h" :spacing 20 :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "iconcpu" :text "")
+				(scale :min 0 :max 100 :value CPU_USAGE :active "false")
+                (label :class "cputext" :text CPU_USAGE)
+                (label :class "cputext" :text "%"))
+			(box :class "bright_bar" :orientation "h" :spacing 20 :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "iconbright" :text "󰔐")
+				(scale :min 0 :max 100 :value CPUTEMP :active "false")
+				(label :class "brighttext" :text CPUTEMP )
+				(label :class "brighttext" :text "C"))
+			(box :class "mem_bar" :orientation "h" :spacing 20 :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "iconmem" :text "")
+				(scale :min 0 :max 100 :value MEM_USAGE :active "false")
+				(label :class "memtext" :text MEM_USAGE)
+				(label :class "memtext" :text "%"))
+			(box :class "bat_bar" :orientation "h" :spacing 20 :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "iconbat" :text "")
+				(scale :min 0 :max 100 :value DRIVE_USAGE :active "false")
+				(label :class "battext" :text DRIVE_USAGE)
+				(label :class "battext" :text "%"))
+			(box :class "vol_bar" :orientation "h" :spacing 20 :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "iconvol" :text "")
+				(scale :min 0 :max 100 :value VOLUME :active "false")
+				(label :class "voltext" :text VOLUME)
+				(label :class "voltext" :text "%"))
+			(box :class "bright_bar" :orientation "h" :spacing 20 :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "iconbright" :text "󰃠")
+				(scale :min 0 :max 100 :value BLIGHT :active "false")
+				(label :class "brighttext" :text BLIGHT)
+				(label :class "brighttext" :text "%"))
+            )))
+
+;; clock
+(defwidget clock [] 
+	(box :class "genwin" :orientation "h" :spacing 50 :space-evenly false :vexpand "false" :hexpand "false" 
+		(box :orientation "h" :spacing 0
+			(label :class "time_hour" :valign "start" :wrap "true" :limit-width 25 :text HOUR)
+			(label :class "time_min" :valign "end" :wrap "true" :limit-width 25 :text MIN))
+		(box :orientation "v" :spacing 0 
+			(label :class "time_mer" :valign "start" :halign "end" :wrap "true" :limit-width 25 :text MER)
+			(label :class "time_day" :valign "end" :halign "end" :wrap "true" :limit-width 25 :text DAY))))
+;; network
+(defwidget network [] 
+	(box :class "genwin" 
+		(box :orientation "h" :halign "center" :spacing 40 :space-evenly "false" :vexpand "false" :hexpand "false" 
+			(label :class "icontimer" :valign "center" :text " ")
+			(box :orientation "v" :valign "center" :spacing 0 :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "uphour" :halign "start" :wrap "true" :limit-width 25 :text SSID)
+				(label :class "upmin" :halign "start" :wrap "true" :limit-width 25 :text IP)))))
+
+;; workspaces
+(defwidget workspaces [] 
+	(box :class "genwin" 
+		(box :orientation "h" :class "workspaces" :halign "center" :space-evenly "false" :vexpand "false" :hexpand "false" 
+			(button :class ACTIVEWORK1 :onclick "hyprctl dispatch workspace 1" WORK1)
+			(button :class ACTIVEWORK2 :onclick "hyprctl dispatch workspace 2" WORK2)
+			(button :class ACTIVEWORK3 :onclick "hyprctl dispatch workspace 3" WORK3)
+			(button :class ACTIVEWORK4 :onclick "hyprctl dispatch workspace 4" WORK4)
+			(button :class ACTIVEWORK5 :onclick "hyprctl dispatch workspace 5" WORK5)
+			(button :class ACTIVEWORK6 :onclick "hyprctl dispatch workspace 6" WORK6)
+			(button :class ACTIVEWORK7 :onclick "hyprctl dispatch workspace 7" WORK7)
+			(button :class ACTIVEWORK8 :onclick "hyprctl dispatch workspace 8" WORK8)
+			(button :class ACTIVEWORK9 :onclick "hyprctl dispatch workspace 9" WORK9)
+			(button :class ACTIVEWORK10 :onclick "hyprctl dispatch workspace 10" WORK10)
+			(box :orientation "v" :valign "center" :spacing 0 :space-evenly "false" :vexpand "false" :hexpand "false" 
+            ))))
+
+;; Music
+(defwidget music [] 
+	(box :class "genwin" :orientation "h" :space-evenly "false" :vexpand "false" :hexpand "false" 
+		(box :class "album_art" :vexpand "false" :hexpand "false" :style "background-image: url('${COVER}');") (box :orientation "v" :spacing 20 :space-evenly "false" :vexpand "false" :hexpand "false" 
+			(label :halign "center" :class "song" :wrap "true" :limit-width 20 :text SONG)
+			(label :halign "center" :class "artist" :wrap "true" :limit-width 15 :text ARTIST)
+			(box :orientation "h" :spacing 20 :halign "center" :space-evenly "true" :vexpand "false" :hexpand "false" 
+				(button :class "btn_prev" :onclick "scripts/music_info --prev" "󰒮")
+				(button :class "btn_play" :onclick "scripts/music_info --toggle" STATUS)
+				(button :class "btn_next" :onclick "scripts/music_info --next" "󰒭"))
+			(box :class "music_bar" :halign "center" :vexpand "false" :hexpand "false" 
+				(scale :onscroll "mpc -q seek +1" :min 0 :active "true" :max 100 :value CURRENT)))))
+
+(defwidget launcher [] 
+	(box :class "genwin" :orientation "h" :space-evenly "false" :vexpand "false" :hexpand "false" 
+        (box :orientation "v" :space-evenly "false" :vexpand "false")
+    (input :class "input" :value "hi" :onchange "echo {} >> ~/hi")
+    ))
+;; profile
+(defwidget battery [] 
+	(box :class "genwin" :orientation "h" :spacing 35 :space-evenly "false" :vexpand "false" :hexpand "false"
+        (box :class "batcontain" :orientation "v" :space-evently "true" :vexpand "false" :hexpand "false"
+		    (box :class "batbox" :orientation "v" :spacing 10 :halign "center" :space-evenly "false" :vexpand "false" :hexpand "false" 
+                (circular-progress :start-at 75 :value BATTERY :class "battbar" :thickness 4
+		        (box :class "batcircle"  :vexpand "false" :hexpand "false" :style "background-image: url('${LAPTOPIMAGE}');"))
+                (label :class "batnum" :text "${BATTERY}${CSTATUS}" :tooltip "${BATTIME}"))
+            (box :class "batbox" :orientation "v" :spacing 10 :halign "center" :space-evenly "false" :vexpand "false" :hexpand "false" 
+                (circular-progress :start-at 75 :value DEV1BAT :class "battbar" :thickness 4
+		        (box :class "batcircle" :vexpand "false" :hexpand "false" :style "background-image: url('${DEV1ICON}');"))
+                (label :class "batnum" :text "${DEV1BAT}${DEV1PER}"))
+            (box :class "batbox" :orientation "v" :spacing 10 :halign "center" :space-evenly "false" :vexpand "false" :hexpand "false" 
+                (circular-progress :start-at 75 :value DEV2BAT :class "battbar" :thickness 4
+		        (box :class "batcircle" :vexpand "false" :hexpand "false" :style "background-image: url('${DEV2ICON}');"))
+                (label :class "batnum" :text "${DEV2BAT}${DEV2PER}"))
+            (box :class "batbox" :orientation "v" :spacing 10 :halign "center" :space-evenly "false" :vexpand "false" :hexpand "false" 
+                (circular-progress :start-at 75 :value DEV3BAT :class "battbar" :thickness 4
+		        (box :class "batcircle" :vexpand "false" :hexpand "false" :style "background-image: url('${DEV3ICON}');"))
+                (label :class "batnum" :text "${DEV3BAT}${DEV3PER}"))
+
+        )
+    ))
+
+;; weather
+(defwidget weather [] 
+	(box :class "genwin" 
+		(box :orientation "v" :spacing 10 :space-evenly "false" :vexpand "false" :hexpand "false" 
+			(box :orientation "h" :vexpand "false" :hexpand "false" 
+				(label :class "iconweather" :halign "start" :style "color: ${HEX};" :text ICON)
+				(label :class "label_temp" :halign "end" :text TEMP))
+			(box :orientation "v" :spacing 10 :halign "center" :space-evenly "false" :vexpand "false" :hexpand "false" 
+				(label :class "label_stat" :text STAT)
+				(label :class "label_quote" :text QUOTE)
+				(label :class "label_quote" :text QUOTE2)))))
+
+;; ** Windows *************************************************************************
+
+
+;; background
+(defwindow background :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x 0 :y 0 :width "100%" :height "100%")
+					(bg))
+
+;; profile
+(defwindow profile :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "23%" :y "10%" :width "15%" :height "29%")
+					(user))
+
+;; system
+(defwindow system :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "23%" :y "40%" :width "15%" :height "27%")
+					(system))
+
+;; clock
+(defwindow clock :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "39%" :y "10%" :width "13%" :height "9%")
+					(clock))
+;; network 
+(defwindow network :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "39%" :y "20%" :width "13%" :height "9%")
+					(network))
+
+;; workspaces
+(defwindow workspaces :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "39%" :y "61%" :width "23%" :height "6%")
+					(workspaces))
+
+;; music
+(defwindow music :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "39%" :y "30%" :width "23%" :height "16%")
+					(music))
+;; launcher
+(defwindow launcher :stacking "fg" :monitor 0 :focusable "true" :screen 1 
+	    :geometry (geometry :x "38%" :y "46%" :width "23%" :height "16%")
+					(launcher))
+
+;; battery
+(defwindow battery :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "63%" :y "30%" :width "6%" :height "37%")
+					(battery))
+;; github
+(defwindow github :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 515 :y 785 :width 141 :height 145)
+					(github))
+
+;; reddit
+(defwindow reddit :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 671 :y 785 :width 141 :height 145)
+					(reddit))
+
+;; twitter
+(defwindow twitter :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 827 :y 785 :width 141 :height 145)
+					(twitter))
+
+;; youtube
+(defwindow youtube :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 983 :y 785 :width 142 :height 145)
+					(youtube))
+
+;; weather
+(defwindow weather :stacking "fg" :monitor 0 :focusable "false" :screen 1 
+	    :geometry (geometry :x "53%" :y "10%" :width "16%" :height "19%")
+					(weather))
+
+;; apps
+(defwindow apps :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 1140 :y 490 :width 290 :height 280)
+					(apps))
+
+;; mail
+(defwindow mail :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 1140 :y 785 :width 290 :height 145)
+					(mail))
+
+;; logout
+(defwindow logout :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 1445 :y 150 :width 155 :height 155)
+					(logout))
+
+;; sleep
+(defwindow sleep :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 1615 :y 150 :width 77 :height 155)
+					(sleep))
+
+;; reboot
+(defwindow reboot :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 1445 :y 320 :width 155 :height 155)
+					(reboot))
+
+;; poweroff
+(defwindow poweroff :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 1615 :y 320 :width 155 :height 155)
+					(poweroff))
+
+;; folders
+(defwindow folders :stacking "fg" :focusable "false" :screen 1 
+	    :geometry (geometry :x 1445 :y 490 :width 325 :height 440)
+					(folders))

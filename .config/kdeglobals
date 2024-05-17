@@ -1,0 +1,8 @@
+[General]
+TerminalApplication=alacritty
+
+[KShortcutsDialog Settings]
+Dialog Size=636,480
+
+[PreviewSettings]
+MaximumRemoteSize=0

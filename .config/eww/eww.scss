@@ -1,0 +1,258 @@
+/** Global *******************************************/
+*{
+	all: unset;
+	font-family: feather;
+	font-family: Iosevka;
+}
+
+/** Background ***************************************/
+.bg {
+	// background-image: url("/home/spagett/.config/wallpaper.png");
+	background-color: #000000;
+	opacity: 0.2;
+}
+
+/** Generic window ***********************************/
+.genwin {
+	background-color: #2E3440;
+	border-radius: 16px;
+}
+
+/** Profile ******************************************/
+.face {
+	background-size: 200px;
+	min-height: 200px;
+	min-width: 200px;
+	margin: 65px 0px 0px 0px;
+	border-radius: 100%;
+}
+
+.fullname {
+	color: #D46389;
+	font-size : 30px;
+	font-weight : bold;
+}
+
+.username {
+	color: #8FBCBB;
+	font-size : 22px;
+	font-weight : bold;
+	margin : -15px 0px 0px 0px;
+}
+
+/** System ********************************************/
+.iconcpu, .iconmem, .iconbright, .iconvol, .iconbat {
+	font-size : 32px;
+	font-weight : normal;
+}
+.iconcpu, .cputext {
+	color: #BF616A;
+}
+.iconmem, .memtext {
+	color: #A3BE8C;
+}
+.iconbright, .brighttext {
+	color: #EBCB8B;
+}
+.iconbat, .battext{
+	color: #88C0D0;
+}
+.iconvol, .voltext{
+	color: #b4befe;
+}
+.cputext, .memtext, .voltext, .brighttext, .battext {
+	font-size : 27px;
+	font-weight : normal;
+}
+
+.cpu_bar, .mem_bar, .vol_bar, .bright_bar, .bat_bar, scale trough {
+	all: unset;
+	background-color: #3A404C;
+	border-radius: 16px;
+	min-height: 28px;
+	min-width: 240px;
+}
+
+.cpu_bar, .mem_bar, .vol_bar, .bright_bar, .bat_bar, scale trough highlight {
+	all: unset;
+	border-radius: 16px;
+}
+
+.cpu_bar scale trough highlight {
+	background-color: #BF616A;
+}
+.mem_bar scale trough highlight {
+	background-color: #A3BE8C;
+}
+.bright_bar scale trough highlight {
+	background-color: #EBCB8B;
+}
+.vol_bar scale trough highlight {
+	background-color: #b4befe;
+}
+.bat_bar scale trough highlight {
+	background-color: #88C0D0;
+}
+
+/** Clock ********************************************/
+.time_hour, .time_min {
+	color: #81A1C1;
+	font-size : 70px;
+	font-weight : bold;
+}
+.time_hour {
+	margin : 15px 0px 0px 20px;
+}
+.time_min {
+	margin : 0px 0px 10px 0px;
+}
+
+.time_mer {
+    color: #A0BB8A;
+    font-size: 40px;
+	margin : 10px 20px 10px 0px;
+}
+.time_day {
+    color: #E8C989;
+    font-size: 30px;
+	margin : 0px 0px 10px 0px;
+}
+/** Music ***************************************/
+.album_art {
+	background-size: 10rem;
+	min-height: 10rem;
+	min-width: 10rem;
+	margin: 2.3rem 1.6rem 2.3rem 1.5rem;
+	border-radius: 1rem;
+}
+
+.song {
+	color: #8FBCBB;
+	font-size : 32px;
+	font-weight : bold;
+	margin : 40px 0px 0px 0px;
+}
+
+.artist {
+	color: #EBCB8B;
+	font-size : 26px;
+	font-weight : normal;
+	margin : 0px 0px 15px 0px;
+}
+
+.btn_prev, .btn_play, .btn_next {
+	font-family: Iosevka Nerd Font;
+}
+.btn_prev {
+	color: #EBCB8B;
+	font-size : 42px;
+	font-weight : normal;
+}
+.btn_play {
+	color: #A3BE8C;
+	font-size : 58px;
+	font-weight : bold;
+}
+.btn_next {
+	color: #EBCB8B;
+	font-size : 42px;
+	font-weight : normal;
+}
+
+.music_bar scale trough highlight {
+	all: unset;
+	background-color: #B48EAD;
+	border-radius: 8px;
+}
+.music_bar scale trough {
+	all: unset;
+	background-color: #3A404C;
+	border-radius: 8px;
+	min-height: 30px;
+	min-width: 310px;
+	margin : 10px 0px 15px 0px;
+}
+/** Weather ***************************************/
+.iconweather {
+	font-family: Iosevka Nerd Font;
+	font-size : 120px;
+	font-weight : normal;
+	margin : 15px 0px 0px 30px;
+}
+
+.label_temp {
+	color : #A6D1DD;
+	font-size : 80px;
+	font-weight : bold;
+	margin : -15px 30px 0px 0px;
+}
+
+.label_stat {
+	color : #BF616A;
+	font-size : 38px;
+	font-weight : bold;
+}
+
+.label_quote {
+	color : #E5E5E5;
+	font-size : 18px;
+	font-weight : normal;
+}
+/** Uptime ********************************************/
+.icontimer {
+	color: #B48EAD;
+	font-size : 90px;
+	font-weight : normal;
+}
+
+.uphour {
+	color: #E5E9F0;
+	font-size : 32px;
+	font-weight : bold;
+}
+
+.upmin {
+	color: #E5E9F0;
+	font-size : 22px;
+	font-weight : bold;
+}
+
+/** Battery *****************/
+.battbar {
+  color: #afbea2;
+  background-color: #38384d;
+  border-radius: 80px;
+  font-size : 120px;
+}
+.batcircle {
+    font-size: 55px;
+    margin: 30px;
+    color: #afbea2;
+	background-size: 60px;
+	min-height: 60px;
+	min-width: 60px;
+    // margin: 100px 100px 100px 100px;
+}
+.batnum {
+    color: #afbea2;
+    font-size: 25px;
+}
+.batbox {
+    margin: 0px 20px 0px 0px;
+}
+.batcontain {
+	margin: 20px 0px 0px 20px;
+}
+.workspaces {
+    margin: 0rem 0.3rem 0rem 0.3rem;
+}
+.btn_workspace, .btn_active_workspace {
+    font-size: 20px;
+    margin: 10px;
+}
+.btn_workspace {
+    color: #CBA6F7;
+}
+.btn_active_workspace {
+    color: #B4BEFE;
+}

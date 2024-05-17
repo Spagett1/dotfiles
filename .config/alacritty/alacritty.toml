@@ -1,0 +1,10 @@
+import = ["/home/spagett/.config/alacritty/dracula.toml"]
+
+[font]
+size = 20
+
+[font.normal]
+family = "CaskaydiaCove Nerd Font Mono"
+
+[shell]
+program = "/bin/zsh"

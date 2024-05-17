@@ -1,0 +1,33 @@
+#!/bin/sh
+DEVICE="wlan0"
+
+get_ssid() {
+    ssid=$(nmcli -t -f GENERAL.CONNECTION d show wlan0 | cut -d":" -f2)
+    echo $ssid
+}
+get_ip() {
+    ip=$(ip a | grep -A 6 "$DEVICE" | grep "inet " | cut -d" " -f6)
+    echo $ip
+}
+get_wifi_strength() {
+    strength=$(nmcli dev wifi list | awk '/\*/{if (NR!=1) {print $8}}')
+    if [ $strength -le 10 ]; then
+        echo "󰤯"
+    elif [ $strength -le 30 ]; then
+        echo "󰤟"
+    elif [ $strength -le 60 ]; then
+        echo "󰤢"
+    elif [ $strength -le 80 ]; then
+        echo "󰤥"
+    else 
+        echo "󰤨"
+    fi
+}
+
+if [ "$1" = "--ssid" ]; then
+    get_ssid
+elif [ "$1" = "--ip" ]; then
+    get_ip
+elif [ "$1" = "--strength" ]; then
+    get_wifi_strength
+fi

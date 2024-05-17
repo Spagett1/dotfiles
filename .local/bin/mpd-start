@@ -1,0 +1,4 @@
+#!/bin/sh
+mpd &
+sleep 3
+mpDris2

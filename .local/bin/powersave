@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ $@ == "save" ]; then
+  tlp bat
+  cpupower frequency-set -g powersave
+  cpupower frequency-set -u 2.7GHz 
+else
+fi
+
